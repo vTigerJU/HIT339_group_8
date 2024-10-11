@@ -19,6 +19,6 @@ public partial class NewSchedule
 
     public ApplicationUser? Coach {  get; set; }
 
-    public List<ApplicationUser> Members { get; set; }
+    public List<ApplicationUser>? Members { get; set; }
 
 }

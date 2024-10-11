@@ -47,7 +47,7 @@ namespace AnyoneForTennis.Data.Migrations
 
                     b.HasIndex("CoachId");
 
-                    b.ToTable("Schedules");
+                    b.ToTable("Schedules", (string)null);
                 });
 
             modelBuilder.Entity("ApplicationUserNewSchedule", b =>
@@ -62,7 +62,7 @@ namespace AnyoneForTennis.Data.Migrations
 
                     b.HasIndex("SchedulesScheduleId");
 
-                    b.ToTable("ApplicationUserNewSchedule");
+                    b.ToTable("ApplicationUserNewSchedule", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
