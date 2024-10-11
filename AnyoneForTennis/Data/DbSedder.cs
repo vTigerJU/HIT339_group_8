@@ -4,6 +4,8 @@ using System;
 
 using AnyoneForTennis.Models;
 using Microsoft.EntityFrameworkCore;
+using AnyoneForTennis.Services;
+using System.Runtime.CompilerServices;
 
 namespace AnyoneForTennis.Data
 {
@@ -11,23 +13,26 @@ namespace AnyoneForTennis.Data
     {
         public static async Task SeedDefaultData(IServiceProvider service)
         {
-            var userMgr = service.GetService<UserManager<IdentityUser>>();
+            var userMgr = service.GetService<UserManager<ApplicationUser>>();
             var roleMgr = service.GetService<RoleManager<IdentityRole>>();
             var context = service.GetRequiredService<ApplicationDbContext>();
+            var migrationService = service.GetService<DataMigrationService>();
 
             //adding some roles to db
             await roleMgr.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
             await roleMgr.CreateAsync(new IdentityRole(Roles.Coach.ToString()));
             await roleMgr.CreateAsync(new IdentityRole(Roles.User.ToString()));
 
+          
 
             // create admin user
 
-            var admin = new IdentityUser
+            var admin = new ApplicationUser
             {
                 UserName = "admin@gmail.com",
                 Email = "admin@gmail.com",
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                Schedules = new List<NewSchedule>()
             };
 
             var userInDb = await userMgr.FindByEmailAsync(admin.Email);
@@ -37,11 +42,12 @@ namespace AnyoneForTennis.Data
                 await userMgr.AddToRoleAsync(admin, Roles.Admin.ToString());
             }
             // coach
-            var coach = new IdentityUser
+            var coach = new ApplicationUser
             {
                 UserName = "coach@gmail.com",
                 Email = "coach@gmail.com",
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                Schedules = new List<NewSchedule>()
             };
 
             userInDb = await userMgr.FindByEmailAsync(coach.Email);
@@ -51,11 +57,13 @@ namespace AnyoneForTennis.Data
                 await userMgr.AddToRoleAsync(coach, Roles.Coach.ToString());
             }
 
-            var user = new IdentityUser
+            var user = new ApplicationUser
             {
                 UserName = "user@gmail.com",
                 Email = "user@gmail.com",
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                Schedules = new List<NewSchedule>()
+
             };
 
             userInDb = await userMgr.FindByEmailAsync(user.Email);
@@ -63,6 +71,12 @@ namespace AnyoneForTennis.Data
             {
                 await userMgr.CreateAsync(user, "User@123");
                 await userMgr.AddToRoleAsync(user, Roles.User.ToString());
+            }
+            context.SaveChanges();
+            //Migrate old Data
+            if (!context.Schedules.Any())
+            {
+                await migrationService.MigrateData(userMgr);
             }
         }
     }
