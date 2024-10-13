@@ -27,7 +27,8 @@ namespace AnyoneForTennis.Services
             {
                 Name = old.Name,
                 Location = old.Location,
-                Description = old.Description
+                Description = old.Description,
+                Date = new DateOnly(2024, 10, 30)
             }).ToList();
             //Inserts schedules from given database into our own database context
             await _applicationDbContext.Schedules.AddRangeAsync(newSchedules);

@@ -15,6 +15,8 @@ public partial class NewSchedule
     public string? Location { get; set; }
 
     public string? Description { get; set; }
+    [DataType(DataType.Date)]
+    public DateOnly Date  { get; set; }
     public string? CoachId { get; set; }
 
     public ApplicationUser? Coach {  get; set; }

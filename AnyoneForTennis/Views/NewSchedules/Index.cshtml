@@ -23,6 +23,9 @@
                 @Html.DisplayNameFor(model => model.Location)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
@@ -41,6 +44,9 @@
                 @Html.DisplayFor(modelItem => item.Location)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
@@ -55,6 +61,8 @@
 
                 }
                 <a asp-action = "Details" asp-route-id = "@item.ScheduleId" > Details </a>
+                <a asp-action="Enrol" asp-route-id="@item.ScheduleId"> Enrol </a>
+
 
             </td>
         </tr>

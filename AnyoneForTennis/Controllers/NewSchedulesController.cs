@@ -31,6 +31,25 @@ namespace AnyoneForTennis.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        [Authorize(Roles="User")]
+        public async Task<IActionResult> Enrol(int? id)
+        {
+            var schedule = _context.Schedules.First(s => s.ScheduleId == id);
+            var user = await _userManager.GetUserAsync(User);
+            var currentDate = DateOnly.FromDateTime(DateTime.Today);
+            if(user != null && currentDate < schedule.Date)
+            {
+                if(schedule.Members == null)
+                {
+                    schedule.Members = new List<ApplicationUser>();
+                }
+                schedule.Members.Add(user);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: NewSchedules/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -65,7 +84,7 @@ namespace AnyoneForTennis.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ScheduleId,Name,Location,Description,CoachId")] NewSchedule newSchedule)
+        public async Task<IActionResult> Create([Bind("ScheduleId,Name,Location,Description,Date,CoachId")] NewSchedule newSchedule)
         {
             if (ModelState.IsValid)
             {
@@ -103,7 +122,7 @@ namespace AnyoneForTennis.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("ScheduleId,Name,Location,Description,CoachId")] NewSchedule newSchedule)
+        public async Task<IActionResult> Edit(int id, [Bind("ScheduleId,Name,Location,Description,Date,CoachId")] NewSchedule newSchedule)
         {
             if (id != newSchedule.ScheduleId)
             {
