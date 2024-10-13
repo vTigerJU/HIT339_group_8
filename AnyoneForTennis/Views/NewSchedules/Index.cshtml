@@ -1,11 +1,13 @@
-﻿@model IEnumerable<AnyoneForTennis.Models.NewSchedule>
-
+﻿@using Microsoft.AspNetCore.Identity
+@using AnyoneForTennis.Constants
+@inject SignInManager<ApplicationUser> SignInManager
+@model AnyoneForTennis.Models.ViewModels.UserScheduleViewModel
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-@if (User.IsInRole("Admin"))
+<h1>Schedules</h1>
+@if (User.IsInRole(Roles.Admin.ToString()))
 {
     <p>
         <a asp-action="Create">Create New</a>
@@ -17,25 +19,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Schedules[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Location)
+                @Html.DisplayNameFor(model => model.Schedules[0].Location)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Date)
+                @Html.DisplayNameFor(model => model.Schedules[0].Date)
+            </th>         
+            <th>
+                @Html.DisplayNameFor(model => model.Schedules[0].Coach)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Coach)
+                Enrolled
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Schedules) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -47,13 +49,22 @@
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Coach.UserName)
             </td>
+            
+            @if (Model.User.Schedules.Contains(item))
+            {
+                <td>
+                    Yes
+                </td>
+            }
+            else{
+                <td>
+                    -
+                </td>
+            }
             <td>
-                @if (User.IsInRole("Admin"))
+                @if (User.IsInRole(Roles.Admin.ToString()))
                 {
                     <a asp-action="Edit" asp-route-id="@item.ScheduleId">Edit</a>
  
@@ -61,9 +72,18 @@
 
                 }
                 <a asp-action = "Details" asp-route-id = "@item.ScheduleId" > Details </a>
-                <a asp-action="Enrol" asp-route-id="@item.ScheduleId"> Enrol </a>
+                @if (User.IsInRole(Roles.User.ToString()))
+                {
+                    @if (Model.User.Schedules.Contains(item))
+                    {
+                        <a asp-action="Enrol" asp-route-id="@item.ScheduleId"> Leave </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Enrol" asp-route-id="@item.ScheduleId"> Enrol </a>
 
-
+                    }
+                }
             </td>
         </tr>
 }

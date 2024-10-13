@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using AnyoneForTennis.Models.ViewModels;
 using AnyoneForTennis.Models;
+using AnyoneForTennis.Constants;
 
 namespace AnyoneForTennis.Controllers
 {
@@ -22,6 +23,7 @@ namespace AnyoneForTennis.Controllers
         }
 
         // List all roles created by users
+        [Authorize(Roles = "Admin" )]
         public IActionResult Index()
         {
             var roles = _roleManager.Roles;
@@ -29,12 +31,14 @@ namespace AnyoneForTennis.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(IdentityRole model)
         {
             if (!await _roleManager.RoleExistsAsync(model.Name))
@@ -45,6 +49,7 @@ namespace AnyoneForTennis.Controllers
         }
 
         // List all users and their roles
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ManageUserRoles()
         {
             var users = _userManager.Users.ToList();
@@ -66,6 +71,7 @@ namespace AnyoneForTennis.Controllers
 
         // GET: Edit roles for a specific user
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditUserRoles(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -84,6 +90,7 @@ namespace AnyoneForTennis.Controllers
 
         // POST: Update roles for a user
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditUserRoles(EditUserRolesViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
@@ -99,11 +106,6 @@ namespace AnyoneForTennis.Controllers
             await _userManager.RemoveFromRolesAsync(user, currentRoles.Except(selectedRoles));
 
             return RedirectToAction("ManageUserRoles");
-        }
-
-        public IActionResult Dashboard()
-        {
-            return View();
         }
     }
 }

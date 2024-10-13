@@ -13,6 +13,7 @@ var hitConnectionString = builder.Configuration.GetConnectionString("Hitdb1Conne
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.AddDbContext<Hitdb1Context>(options =>
     options.UseSqlServer(hitConnectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -54,7 +55,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

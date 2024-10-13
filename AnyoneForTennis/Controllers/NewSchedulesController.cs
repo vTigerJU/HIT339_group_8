@@ -10,6 +10,7 @@ using AnyoneForTennis.Models;
 using AnyoneForTennis.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using AnyoneForTennis.Models.ViewModels;
 
 namespace AnyoneForTennis.Controllers
 {
@@ -25,16 +26,31 @@ namespace AnyoneForTennis.Controllers
         }
 
         // GET: NewSchedules
+        [Authorize(Roles="User, Admin")]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Schedules.Include(n => n.Coach);
-            return View(await applicationDbContext.ToListAsync());
+            UserScheduleViewModel usVM = new UserScheduleViewModel();
+            var schedules = await _context.Schedules.Include(n => n.Coach).ToListAsync();
+            usVM.Schedules = schedules;
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var currentUsers = await _context.Users.Include(n => n.Schedules).Where(u => u.Id == userId).ToListAsync();
+                usVM.User = currentUsers.First();
+            }
+            else
+            {
+                var emptyUser = new ApplicationUser();
+                emptyUser.Schedules = new List<NewSchedule>();
+                usVM.User = emptyUser;
+            }
+            return View(usVM);
         }
 
         [Authorize(Roles="User")]
         public async Task<IActionResult> Enrol(int? id)
         {
-            var schedule = _context.Schedules.First(s => s.ScheduleId == id);
+            var schedule = _context.Schedules.Include(s => s.Members).First(s => s.ScheduleId == id);
             var user = await _userManager.GetUserAsync(User);
             var currentDate = DateOnly.FromDateTime(DateTime.Today);
             if(user != null && currentDate < schedule.Date)
@@ -43,7 +59,14 @@ namespace AnyoneForTennis.Controllers
                 {
                     schedule.Members = new List<ApplicationUser>();
                 }
-                schedule.Members.Add(user);
+                if (schedule.Members.Contains(user))
+                {
+                    schedule.Members.Remove(user);
+                }
+                else
+                {
+                    schedule.Members.Add(user);
+                }
                 _context.SaveChanges();
             }
 
@@ -51,6 +74,7 @@ namespace AnyoneForTennis.Controllers
         }
 
         // GET: NewSchedules/Details/5
+        [Authorize(Roles = "User, Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
