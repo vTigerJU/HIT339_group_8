@@ -13,6 +13,7 @@ var hitConnectionString = builder.Configuration.GetConnectionString("Hitdb1Conne
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.AddDbContext<Hitdb1Context>(options =>
     options.UseSqlServer(hitConnectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -20,8 +21,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultUI()
     .AddDefaultTokenProviders();
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<DataMigrationService>();
@@ -54,7 +55,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

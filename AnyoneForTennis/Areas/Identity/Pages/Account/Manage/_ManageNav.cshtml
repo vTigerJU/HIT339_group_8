@@ -1,4 +1,4 @@
-﻿@using AnyoneForTennis.Models;
+﻿@using AnyoneForTennis.Models
 @inject SignInManager<ApplicationUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();

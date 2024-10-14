@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using AnyoneForTennis.Constants;
 using System;
-
 using AnyoneForTennis.Models;
 using Microsoft.EntityFrameworkCore;
 using AnyoneForTennis.Services;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AnyoneForTennis.Data
 {
@@ -13,7 +13,7 @@ namespace AnyoneForTennis.Data
     {
         public static async Task SeedDefaultData(IServiceProvider service)
         {
-            var userMgr = service.GetService<UserManager<ApplicationUser>>();
+            var userMgr = service.GetRequiredService<UserManager<ApplicationUser>>();
             var roleMgr = service.GetService<RoleManager<IdentityRole>>();
             var context = service.GetRequiredService<ApplicationDbContext>();
             var migrationService = service.GetService<DataMigrationService>();

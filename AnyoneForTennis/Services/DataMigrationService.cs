@@ -27,7 +27,8 @@ namespace AnyoneForTennis.Services
             {
                 Name = old.Name,
                 Location = old.Location,
-                Description = old.Description
+                Description = old.Description,
+                Date = new DateOnly(2024, 11, 30)
             }).ToList();
             //Inserts schedules from given database into our own database context
             await _applicationDbContext.Schedules.AddRangeAsync(newSchedules);
@@ -36,11 +37,12 @@ namespace AnyoneForTennis.Services
             //Transforms coach into applicationUser with Coach Role
             foreach (var coach in coaches)
             {
+                var firstName = coach.FirstName.Trim(charTrim);
                 var user = new ApplicationUser
                 {
                     Id = Guid.NewGuid().ToString(),
-                    UserName = coach.FirstName.Trim(charTrim),
-                    Email = "coach@aft.com",
+                    UserName = firstName,
+                    Email = firstName + "@aft.com",
                     EmailConfirmed = true,
                     Firstname = coach.FirstName.Trim(charTrim),
                     Lastname = coach.LastName.Trim(charTrim),
@@ -49,7 +51,7 @@ namespace AnyoneForTennis.Services
                     Schedules = new List<NewSchedule>()
 
                 };
-                var result =  await _userMgr.CreateAsync(user, "User@123");                
+                var result =  await _userMgr.CreateAsync(user, "Coach@123");                
                 if (result.Succeeded) 
                 {
                     await manager.AddToRoleAsync(user, Roles.Coach.ToString());
