@@ -9,7 +9,17 @@ namespace AnyoneForTennis.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
         }
-        
+        public DbSet<NewSchedule> Schedules { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<NewSchedule>()
+                .HasOne(s => s.Coach)  
+                .WithMany()
+                .HasForeignKey(s => s.CoachId);
+        }
     }
 }

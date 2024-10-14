@@ -4,6 +4,7 @@ using AnyoneForTennis.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnyoneForTennis.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241011024033_MigrateData")]
+    partial class MigrateData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace AnyoneForTennis.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AnyoneForTennis.Models.NewSchedule", b =>
+            modelBuilder.Entity("AnyoneForTennis.Models.Schedule", b =>
                 {
                     b.Property<int>("ScheduleId")
                         .ValueGeneratedOnAdd()
@@ -50,7 +53,7 @@ namespace AnyoneForTennis.Data.Migrations
                     b.ToTable("Schedules");
                 });
 
-            modelBuilder.Entity("ApplicationUserNewSchedule", b =>
+            modelBuilder.Entity("ApplicationUserSchedule", b =>
                 {
                     b.Property<string>("MembersId")
                         .HasColumnType("nvarchar(450)");
@@ -62,7 +65,7 @@ namespace AnyoneForTennis.Data.Migrations
 
                     b.HasIndex("SchedulesScheduleId");
 
-                    b.ToTable("ApplicationUserNewSchedule");
+                    b.ToTable("ApplicationUserSchedule");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -300,7 +303,7 @@ namespace AnyoneForTennis.Data.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
-            modelBuilder.Entity("AnyoneForTennis.Models.NewSchedule", b =>
+            modelBuilder.Entity("AnyoneForTennis.Models.Schedule", b =>
                 {
                     b.HasOne("AnyoneForTennis.Models.ApplicationUser", "Coach")
                         .WithMany()
@@ -309,7 +312,7 @@ namespace AnyoneForTennis.Data.Migrations
                     b.Navigation("Coach");
                 });
 
-            modelBuilder.Entity("ApplicationUserNewSchedule", b =>
+            modelBuilder.Entity("ApplicationUserSchedule", b =>
                 {
                     b.HasOne("AnyoneForTennis.Models.ApplicationUser", null)
                         .WithMany()
@@ -317,7 +320,7 @@ namespace AnyoneForTennis.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AnyoneForTennis.Models.NewSchedule", null)
+                    b.HasOne("AnyoneForTennis.Models.Schedule", null)
                         .WithMany()
                         .HasForeignKey("SchedulesScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
