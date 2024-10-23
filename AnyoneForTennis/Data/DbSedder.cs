@@ -29,6 +29,8 @@ namespace AnyoneForTennis.Data
 
             var admin = new ApplicationUser
             {
+                Firstname = "Admin",
+                Lastname = "Adminsson",
                 UserName = "admin@gmail.com",
                 Email = "admin@gmail.com",
                 EmailConfirmed = true,
@@ -44,6 +46,8 @@ namespace AnyoneForTennis.Data
             // coach
             var coach = new ApplicationUser
             {
+                Firstname = "Coach",
+                Lastname = "Coachsson",
                 UserName = "coach@gmail.com",
                 Email = "coach@gmail.com",
                 EmailConfirmed = true,
@@ -53,12 +57,14 @@ namespace AnyoneForTennis.Data
             userInDb = await userMgr.FindByEmailAsync(coach.Email);
             if (userInDb is null)
             {
-                await userMgr.CreateAsync(coach, "Admin@123");
+                await userMgr.CreateAsync(coach, "Coach@123");
                 await userMgr.AddToRoleAsync(coach, Roles.Coach.ToString());
             }
 
             var user = new ApplicationUser
             {
+                Firstname = "Jon",
+                Lastname = "Doe",
                 UserName = "user@gmail.com",
                 Email = "user@gmail.com",
                 EmailConfirmed = true,

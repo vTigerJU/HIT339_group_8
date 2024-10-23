@@ -38,11 +38,12 @@ namespace AnyoneForTennis.Services
             foreach (var coach in coaches)
             {
                 var firstName = coach.FirstName.Trim(charTrim);
+                var email = firstName.ToLower() + "@gmail.com";
                 var user = new ApplicationUser
                 {
                     Id = Guid.NewGuid().ToString(),
-                    UserName = firstName,
-                    Email = firstName + "@aft.com",
+                    UserName = email,
+                    Email = email,
                     EmailConfirmed = true,
                     Firstname = coach.FirstName.Trim(charTrim),
                     Lastname = coach.LastName.Trim(charTrim),
